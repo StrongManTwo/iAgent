@@ -1,11 +1,10 @@
-package com.fulan.agent.zuul.filter;
+package com.metlife.agent.zuul.filter;
 
-import com.fulan.agent.commons.exception.BusinessException;
-import com.fulan.agent.commons.exception.ExceptionMsg;
-import com.fulan.agent.commons.helper.*;
-import com.fulan.agent.commons.msg.ResponseData;
-import com.fulan.agent.commons.security.SecurityConstants;
-import com.fulan.agent.commons.vo.CacheDictVo;
+import com.metlife.agent.commons.exception.BusinessException;
+import com.metlife.agent.commons.exception.ExceptionMsg;
+import com.metlife.agent.commons.msg.ResponseData;
+import com.metlife.agent.commons.security.SecurityConstants;
+import com.metlife.agent.commons.vo.CacheDictVo;
 import com.google.common.base.Strings;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

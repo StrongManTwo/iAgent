@@ -1,8 +1,8 @@
-package com.fulan.agent.zuul.filter;
+package com.metlife.agent.zuul.filter;
 
-import com.fulan.agent.commons.exception.ExceptionMsg;
-import com.fulan.agent.commons.helper.JsonHelper;
-import com.fulan.agent.commons.msg.ResponseData;
+import com.metlife.agent.commons.exception.ExceptionMsg;
+import com.metlife.agent.commons.helper.JsonHelper;
+import com.metlife.agent.commons.msg.ResponseData;
 import com.netflix.hystrix.exception.HystrixTimeoutException;
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package com.fulan.agent;
+package com.metlife.agent;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

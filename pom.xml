@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>agent-parent</artifactId>
-        <groupId>com.fulan.agent</groupId>
+        <groupId>com.metlife.agent</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,16 +13,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.fulan.agent</groupId>
+            <groupId>com.metlife.agent</groupId>
             <artifactId>agent-commons</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.fulan.agent</groupId>
+            <groupId>com.metlife.agent</groupId>
             <artifactId>agent-security-api</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>com.fulan.agent</groupId>
+                    <groupId>com.metlife.agent</groupId>
                     <artifactId>agent-orm</artifactId>
                 </exclusion>
             </exclusions>
