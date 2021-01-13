@@ -3,6 +3,7 @@ package com.metlife.agent.zuul.security;
 import com.metlife.agent.commons.msg.ResponseData;
 import com.metlife.agent.commons.security.feign.SecurityClient;
 import com.metlife.agent.commons.security.model.SecurityModel;
+import com.metlife.agent.commons.vo.CacheDictVo;
 import com.metlife.agent.security.client.ISecurityProvideClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,5 +62,15 @@ public class SecurityClientImpl implements SecurityClient {
     @Override
     public List<String> listDictCode(String parentCode) {
         return securityProvideClient.listDictCode(parentCode);
+    }
+
+    @Override
+    public CacheDictVo getCacheDictVo(String code) {
+        return securityProvideClient.getCacheDictVo(code);
+    }
+
+    @Override
+    public List<CacheDictVo> listCacheDictVo(String parentCode) {
+        return securityProvideClient.listCacheDictVo(parentCode);
     }
 }
