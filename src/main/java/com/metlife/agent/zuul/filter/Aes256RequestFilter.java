@@ -121,7 +121,8 @@ public class Aes256RequestFilter extends ZuulFilter {
             //进行转码操作
             cxt.addZuulRequestHeader("Content-Type" , MediaType.APPLICATION_JSON_UTF8_VALUE);
             cxt.addZuulRequestHeader(SecurityConstants.REQUEST_NO , requestNo);
-
+            cxt.addZuulRequestHeader(SecurityConstants.CLIENT , client);
+            cxt.addZuulRequestHeader(SecurityConstants.HEADER_UTOKEN, ServletHelper.getHeader(SecurityConstants.HEADER_UTOKEN));
         } catch (Exception e) {
             //自定义异常
             if (e instanceof BusinessException){
