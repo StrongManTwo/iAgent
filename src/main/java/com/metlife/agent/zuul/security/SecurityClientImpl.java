@@ -64,13 +64,13 @@ public class SecurityClientImpl implements SecurityClient {
         return securityProvideClient.listDictCode(parentCode);
     }
 
-    @Override
-    public CacheDictVo getCacheDictVo(String code) {
-        return securityProvideClient.getCacheDictVo(code);
-    }
-
-    @Override
-    public List<CacheDictVo> listCacheDictVo(String parentCode) {
-        return securityProvideClient.listCacheDictVo(parentCode);
-    }
+//    @Override
+//    public CacheDictVo getCacheDictVo(String code) {
+//        return securityProvideClient.getCacheDictVo(code);
+//    }
+//
+//    @Override
+//    public List<CacheDictVo> listCacheDictVo(String parentCode) {
+//        return securityProvideClient.listCacheDictVo(parentCode);
+//    }
 }
