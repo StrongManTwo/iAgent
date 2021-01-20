@@ -4,6 +4,7 @@ import com.metlife.agent.commons.exception.ExceptionMsg;
 import com.metlife.agent.commons.helper.JsonHelper;
 import com.metlife.agent.commons.msg.ResponseData;
 import com.netflix.hystrix.exception.HystrixTimeoutException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.io.InputStream;
  * @Version 1.0
  **/
 @Component
+@Slf4j
 public class ServiceFallbackProvider implements FallbackProvider {
     @Override
     public String getRoute() {
@@ -29,33 +31,35 @@ public class ServiceFallbackProvider implements FallbackProvider {
 
     @Override
     public ClientHttpResponse fallbackResponse(String route, Throwable cause) {
+        log.info("cause.message = {}, cause;", cause.getMessage(), cause);
         if (cause instanceof HystrixTimeoutException) {
-            return response(504);
+            return response(504, route);
         } else {
-            return this.fallbackResponse();
+            return this.fallbackResponse(route);
         }
+
     }
 
-    public ClientHttpResponse fallbackResponse() {
-        return this.response(500);
+    public ClientHttpResponse fallbackResponse(String route) {
+        return this.response(500, route);
     }
 
 
-    private ClientHttpResponse response(final int status) {
+    private ClientHttpResponse response(final int status, final String route) {
         return new ClientHttpResponse() {
             @Override
             public HttpStatus getStatusCode() {
-                return HttpStatus.SERVICE_UNAVAILABLE;
+                return HttpStatus.OK;
             }
 
             @Override
             public int getRawStatusCode() {
-                return HttpStatus.SERVICE_UNAVAILABLE.value();
+                return HttpStatus.OK.value();
             }
 
             @Override
             public String getStatusText() {
-                return HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
+                return HttpStatus.OK.getReasonPhrase();
             }
 
             @Override
@@ -65,9 +69,10 @@ public class ServiceFallbackProvider implements FallbackProvider {
             @Override
             public InputStream getBody() {
                 String str;
-                if (status == 504) {
+                if (status == HttpStatus.GATEWAY_TIMEOUT.value()) {
                     str= JsonHelper.toJSONString(ResponseData.newInstanceError(ExceptionMsg.DEFAULT_ERROR.getCode(), "当前服务未注册，请稍后再重试"));
                 }else{
+                    log.info("status = {} route = {}", status, route);
                     str= JsonHelper.toJSONString(ResponseData.newInstanceError(ExceptionMsg.DEFAULT_ERROR.getCode(),"当前服务未启动，请启动再重试"));
                 }
                 return new ByteArrayInputStream(str.getBytes());
