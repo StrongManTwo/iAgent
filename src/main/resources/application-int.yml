@@ -16,8 +16,8 @@ eureka:
     #默认为90秒
     lease-expiration-duration-in-seconds: 30
     ip-address: true
-    instance-id: ${spring.application.name}:${AGENT_HOSTNAME:spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
-    hostname: ${AGENT_HOSTNAME:spring.cloud.client.ip-address}
+    instance-id: ${spring.application.name}:${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}:${spring.application.instance_id:${server.port}}
+    hostname: ${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}
   server:
     my-url: null
 
