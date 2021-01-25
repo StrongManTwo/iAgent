@@ -1,7 +1,7 @@
 
 spring:
   profiles:
-    active: ${AGENT-ENV:dev}
+    active: ${AGENT_ENV:dev}
   application:
     name: zuul-service
 
