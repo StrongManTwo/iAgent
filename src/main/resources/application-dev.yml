@@ -57,9 +57,6 @@ zuul:
     security-service:
       path: /security-service/*
       serviceId: security-service
-    admin-job:
-      path: /admin-job/*
-      serviceId: admin-job
     message-service:
       path: /message-service/*
       serviceId: message-service
