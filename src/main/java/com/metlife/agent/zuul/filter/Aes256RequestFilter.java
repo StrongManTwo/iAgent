@@ -78,6 +78,7 @@ public class Aes256RequestFilter extends ZuulFilter {
             String sign = request.getParameter(SecurityConstants.PARAM_SIGN);
             String value = request.getParameter(SecurityConstants.PARAM_VALUE);
             if (Strings.isNullOrEmpty(value)){
+                setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.NULL_VALUE_EXCEPTION));
                 return null;
             }
             //支持get post json 请求
