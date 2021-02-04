@@ -41,7 +41,7 @@ public class SecurityClientImpl implements SecurityClient {
 
     @Override
     public Set<String> findRoleByUserName(String username) {
-        return null;
+        return securityProvideClient.findRoleByUserName(username);
     }
 
     @Override

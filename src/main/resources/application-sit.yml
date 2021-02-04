@@ -82,14 +82,18 @@ shiro:
   security:
     token:
       enabled: true
-      loginurl: /api/login
-      logouturl: /api/logout
-      filter-chain-definitions: "/doc.html=anon,/security-service/api/common/system-device=anon,\
-        /security-service/api/common/system-send-sms=anon,/security-service/api/update-version/**=anon,\
-        /security-service/api/**=utoken,/customer-service/api/**=utoken,/message-service/api/**=utoken,\
-        /policy-service/api/**=utoken"
-      system-expiretime: 604800
-      system-credentials-matcher: sm3
+      login-url: /api/login
+      logout-url: /api/logout
+      manage-login-url: /mapi/login
+      manage-logout-url: /mapi/logout
+      expiretime: 604800
+      credentials-matcher: sm3
+      filter-chain-definitions:
+        - /doc.html=anon
+        - /security-service/api/common/system-device=anon
+        - /security-service/api/common/system-send-sms=anon
+        - /security-service/api/update-version/**=anon
+        - /**=utoken
 
 
 feign:
