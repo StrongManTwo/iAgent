@@ -71,13 +71,14 @@ public class Aes256RequestFilter extends ZuulFilter {
 
             client = client.toLowerCase();
             CacheDictVo cacheDictVo = DictHelper.findByCode(String.format("aes256.%s.enabled", client));
-            if (cacheDictVo == null || Strings.isNullOrEmpty(cacheDictVo.getDictValue())){
+            if (cacheDictVo == null || Strings.isNullOrEmpty(cacheDictVo.getDictValue()) || !Boolean.valueOf(cacheDictVo.getDictValue()).booleanValue()){
                 return null;
             }
 
             String sign = request.getParameter(SecurityConstants.PARAM_SIGN);
             String value = request.getParameter(SecurityConstants.PARAM_VALUE);
             if (Strings.isNullOrEmpty(value)){
+                log.error("sign = {}, value = {}", sign, value);
                 setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.NULL_VALUE_EXCEPTION));
                 return null;
             }
