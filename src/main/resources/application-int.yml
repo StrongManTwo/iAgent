@@ -104,13 +104,17 @@ feign:
       default:
         connect-timeout: 60000
         read-timeout: 60000
+  hystrix:
+    enabled: true
 
+# 具体配置请查看 @see com.netflix.hystrix.HystrixCommandProperties
 hystrix:
   command:
     default:
       execution:
-        timeout:
-          enabled: true
         isolation:
           thread.timeoutInMilliseconds: 240000 #TODO ribbon (ConnectTimeout+ReadTimeout)*(最大重试次数+1)*(最大重试服务个数+1)
+  threadpool:
+    default:
+      coreSize: 500 #并发执行的最大线程数，默认10
 

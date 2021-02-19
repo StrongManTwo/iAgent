@@ -6,8 +6,7 @@ eureka:
     healthcheck:
       enabled: true
     service-url:
-      defaultZone: http://eureka-server-service:8761/eureka/
-#      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka
   instance:
     #leaseRenewalIntervalInSeconds，表示eureka client发送心跳给server端的频率。如果在leaseExpirationDurationInSeconds后，server端没有收到client的心跳，则将摘除该instance。除此之外，如果该instance实现了HealthCheckCallback，并决定让自己unavailable的话，则该instance也不会接收到流量。
     #默认30秒
@@ -16,8 +15,8 @@ eureka:
     #默认为90秒
     lease-expiration-duration-in-seconds: 30
     ip-address: true
-    instance-id: ${spring.application.name}:${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}:${spring.application.instance_id:${server.port}}
-    hostname: ${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+    hostname: ${spring.cloud.client.ip-address}
   server:
     my-url: null
 
@@ -34,9 +33,9 @@ spring:
       retry:
         enabled: false
   redis:
-    host: redpaasnpshared0001.redis.cache.chinacloudapi.cn
-    port: 6380
-    password: 4xOnoOA0q9rfRAAw+kxuAf2k9g53bOk5iXP9Rfrm7B0=
+    host: 127.0.0.1
+    port: 6379
+    password:
     timeout: 10000
     database: 0
     lettuce:
@@ -45,7 +44,6 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
-    ssl: true
   #  main:
   #    allow-bean-definition-overriding: true
   mvc:
@@ -77,7 +75,7 @@ zuul:
     maxPerRouteConnections: 200
     connect-timeout-millis: 6000
 
-
+# 生产配置和其他配置不一致，请知晓
 shiro:
   security:
     token:
@@ -94,8 +92,13 @@ shiro:
         - /security-service/api/update-version/**=anon
         - /security-service/api/common/system-off-line/**=anon
         - /security-service/mapi/common/**=user
-        - /**/api/**=utoken
-        - /**/mapi/**=utoken
+        - /**=utoken
+
+
+
+
+
+
 
 
 feign:
