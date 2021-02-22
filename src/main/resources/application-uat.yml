@@ -92,7 +92,7 @@ shiro:
         - /security-service/api/common/system-device=anon
         - /security-service/api/common/system-send-sms=anon
         - /security-service/api/update-version/**=anon
-        - /security-service/api/common/system-off-line/**=anon
+        - /security-service/api/common/system-off-line=anon
         - /security-service/mapi/common/**=user
         - /**/api/**=utoken
         - /**/mapi/**=utoken
