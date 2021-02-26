@@ -64,6 +64,11 @@ public class SecurityClientImpl implements SecurityClient {
         return securityProvideClient.listDictCode(parentCode);
     }
 
+    @Override
+    public Boolean getMiddleToken(String username, String password) {
+        return securityProvideClient.getMiddleToken(username, password);
+    }
+
 //    @Override
 //    public CacheDictVo getCacheDictVo(String code) {
 //        return securityProvideClient.getCacheDictVo(code);
