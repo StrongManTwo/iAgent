@@ -96,7 +96,13 @@ shiro:
         - /security-service/mapi/common/**=user
         - /**/api/**=utoken
         - /**/mapi/**=utoken
-
+logging:
+  file:
+    name: ${spring.application.name}
+    path: /data/log/${spring.application.name}.log
+  level:
+    root: info
+    com.metlife: info
 
 feign:
   client:
