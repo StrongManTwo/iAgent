@@ -53,6 +53,20 @@ spring:
   resources:
     add-mappings: false
 
+security-service:
+  ribbon:
+    listOfServers: security-server-service
+message-service:
+  ribbon:
+    listOfServers: message-server-service
+customer-service:
+  ribbon:
+    listOfServers: customer-server-service
+
+policy-service:
+  ribbon:
+    listOfServers: policy-server-service
+
 zuul:
   retryable: false
   routes:
