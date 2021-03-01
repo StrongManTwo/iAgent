@@ -55,17 +55,17 @@ spring:
 
 security-service:
   ribbon:
-    listOfServers: security-server-service
+    listOfServers: security-server-service:9083
 message-service:
   ribbon:
-    listOfServers: message-server-service
+    listOfServers: message-server-service:9085
 customer-service:
   ribbon:
-    listOfServers: customer-server-service
+    listOfServers: customer-server-service:9084
 
 policy-service:
   ribbon:
-    listOfServers: policy-server-service
+    listOfServers: policy-server-service:9086
 
 zuul:
   retryable: false
