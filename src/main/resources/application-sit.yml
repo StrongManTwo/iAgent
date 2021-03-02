@@ -102,8 +102,8 @@ logging:
     name: ${spring.application.name}
     path: /data/log/${spring.application.name}.log
   level:
-    root: info
-    com.metlife: info
+    root: debug
+    com.metlife: debug
 
 feign:
   client:
