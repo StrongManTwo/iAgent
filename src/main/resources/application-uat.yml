@@ -71,16 +71,16 @@ zuul:
   retryable: false
   routes:
     security-service:
-      path: /security-service/*
+      path: /security-service/**
       serviceId: security-service
     message-service:
-      path: /message-service/*
+      path: /message-service/**
       serviceId: message-service
     customer-service:
-      path: /customer-service/*
+      path: /customer-service/**
       serviceId: customer-service
     policy-service:
-      path: /policy-service/*
+      path: /policy-service/**
       serviceId: policy-service
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
