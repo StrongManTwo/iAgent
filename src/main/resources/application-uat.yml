@@ -73,18 +73,22 @@ zuul:
     security-service:
       path: /security-service/**
       serviceId: security-service
+      sensitiveheader:
     message-service:
       path: /message-service/**
       serviceId: message-service
+      sensitiveheader:
     customer-service:
       path: /customer-service/**
       serviceId: customer-service
+      sensitiveheader:
     policy-service:
       path: /policy-service/**
       serviceId: policy-service
+      sensitiveheader:
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
-  sensitive-headers:
+  sensitive-headers: '*'
   add-host-header: true
   host:
     maxTotalConnections: 200
