@@ -26,7 +26,7 @@ ribbon:
   ConnectTimeout: 60000 #请求连接的超时时间，默认时间为1秒
   ReadTimeout: 60000 #请求处理的超时时间
   eureka:
-    enable: true
+    enabled: true
 
 spring:
   cloud:
