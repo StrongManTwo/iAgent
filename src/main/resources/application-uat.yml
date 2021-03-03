@@ -74,26 +74,30 @@ zuul:
       path: /security-service/**
       serviceId: security-service
       url: http://security-server-service:9083/
+      sensitiveheader:
     message-service:
       path: /message-service/**
       serviceId: message-service
       url: http://message-server-service:9085/
+      sensitiveheader:
     customer-service:
       path: /customer-service/**
       serviceId: customer-service
       url: http://customer-server-service:9084/
+      sensitiveheader:
     policy-service:
       path: /policy-service/**
       serviceId: policy-service
       url: http://policy-server-service:9086/
+      sensitiveheader:
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
-  sensitive-headers: "*"
-  add-host-header: true
-  host:
-    maxTotalConnections: 200
-    maxPerRouteConnections: 200
-    connect-timeout-millis: 6000
+#  sensitive-headers: "*"
+#  add-host-header: true
+#  host:
+#    maxTotalConnections: 200
+#    maxPerRouteConnections: 200
+#    connect-timeout-millis: 6000
 
 
 shiro:
