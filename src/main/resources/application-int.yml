@@ -7,7 +7,7 @@ eureka:
       enabled: true
     service-url:
       defaultZone: http://eureka-server-service:8761/eureka/
-#      defaultZone: http://localhost:8761/eureka/
+  #      defaultZone: http://localhost:8761/eureka/
   instance:
     #leaseRenewalIntervalInSeconds，表示eureka client发送心跳给server端的频率。如果在leaseExpirationDurationInSeconds后，server端没有收到client的心跳，则将摘除该instance。除此之外，如果该instance实现了HealthCheckCallback，并决定让自己unavailable的话，则该instance也不会接收到流量。
     #默认30秒
@@ -16,8 +16,8 @@ eureka:
     #默认为90秒
     lease-expiration-duration-in-seconds: 30
     ip-address: true
-    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
-    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${spring.application.name}:${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}:${spring.application.instance_id:${server.port}}
+    hostname: ${AGENT_HOSTNAME:${spring.cloud.client.ip-address}}
   server:
     my-url: null
 
@@ -26,7 +26,7 @@ ribbon:
   ConnectTimeout: 60000 #请求连接的超时时间，默认时间为1秒
   ReadTimeout: 60000 #请求处理的超时时间
   eureka:
-    enabled: true
+    enabled: false
 
 spring:
   cloud:
@@ -57,21 +57,21 @@ zuul:
   retryable: false
   routes:
     security-service:
-      path: /security-service/*
+      path: /security-service/**
       serviceId: security-service
     message-service:
-      path: /message-service/*
+      path: /message-service/**
       serviceId: message-service
     customer-service:
-      path: /customer-service/*
+      path: /customer-service/**
       serviceId: customer-service
     policy-service:
-      path: /policy-service/*
+      path: /policy-service/**
       serviceId: policy-service
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
-  sensitive-headers: "*"
-  add-host-header: true
+  #  sensitive-headers: '*'
+  #  add-host-header: true
   host:
     maxTotalConnections: 200
     maxPerRouteConnections: 200
@@ -96,13 +96,14 @@ shiro:
         - /security-service/mapi/common/**=user
         - /**/api/**=utoken
         - /**/mapi/**=utoken
+
 logging:
   file:
     name: ${spring.application.name}
     path: /data/log/${spring.application.name}.log
   level:
-    root: info
-    com.metlife: info
+    root: debug
+    com.metlife: debug
 
 feign:
   client:

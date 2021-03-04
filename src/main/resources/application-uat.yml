@@ -53,39 +53,21 @@ spring:
   resources:
     add-mappings: false
 
-security-service:
-  ribbon:
-    listOfServers: security-server-service:9083
-message-service:
-  ribbon:
-    listOfServers: message-server-service:9085
-customer-service:
-  ribbon:
-    listOfServers: customer-server-service:9084
-
-policy-service:
-  ribbon:
-    listOfServers: policy-server-service:9086
-
 zuul:
   retryable: false
   routes:
     security-service:
       path: /security-service/**
       serviceId: security-service
-      sensitiveheader:
     message-service:
       path: /message-service/**
       serviceId: message-service
-      sensitiveheader:
     customer-service:
       path: /customer-service/**
       serviceId: customer-service
-      sensitiveheader:
     policy-service:
       path: /policy-service/**
       serviceId: policy-service
-      sensitiveheader:
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
 #  sensitive-headers: '*'
