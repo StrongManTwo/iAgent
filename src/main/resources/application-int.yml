@@ -70,7 +70,7 @@ zuul:
       serviceId: policy-service
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
-    sensitive-headers: '*'
+  sensitive-headers: '*'
   #  add-host-header: true
   host:
     maxTotalConnections: 200
@@ -126,4 +126,3 @@ hystrix:
   threadpool:
     default:
       coreSize: 500 #并发执行的最大线程数，默认10
-
