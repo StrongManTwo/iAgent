@@ -71,7 +71,7 @@ zuul:
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
   sensitive-headers: "*"
-  add-host-header: true
+#  add-host-header: true
   host:
     maxTotalConnections: 200
     maxPerRouteConnections: 200
