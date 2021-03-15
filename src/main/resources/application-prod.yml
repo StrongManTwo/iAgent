@@ -98,8 +98,7 @@ shiro:
 
 logging:
   file:
-    name: ${spring.application.name}
-    path: /data/log/${spring.application.name}.log
+    name: /data/log/${spring.application.name}/${spring.application.name}.log
   level:
     root: debug
     com.metlife: debug
