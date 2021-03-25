@@ -8,7 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <version>${agent.version}</version>
     <artifactId>agent-zuul</artifactId>
 
     <dependencies>
