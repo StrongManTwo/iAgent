@@ -13,16 +13,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.metlife.agent</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>agent-commons</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.metlife.agent</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>agent-security-api</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>com.metlife.agent</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>agent-orm</artifactId>
                 </exclusion>
             </exclusions>
