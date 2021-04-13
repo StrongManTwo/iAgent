@@ -95,6 +95,9 @@ shiro:
         - /security-service/api/common/system-off-line=anon
         - /security-service/mapi/common/**=user
         - /**=utoken
+      #包含 filter-chain-definitions anon 和 user
+      filter-chain-custom-definitions:
+        - /security-service/api/user/**
 
 logging:
   file:

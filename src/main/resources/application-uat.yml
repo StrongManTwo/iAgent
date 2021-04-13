@@ -96,7 +96,9 @@ shiro:
         - /security-service/mapi/common/**=user
         - /**/api/**=utoken
         - /**/mapi/**=utoken
-
+      #包含 filter-chain-definitions anon 和 user
+      filter-chain-custom-definitions:
+        - /security-service/api/user/**
 logging:
   file:
     name: /data/log/${spring.application.name}/${spring.application.name}.log
