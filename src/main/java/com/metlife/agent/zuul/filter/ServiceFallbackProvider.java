@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * 服务熔断降级
@@ -82,7 +83,7 @@ public class ServiceFallbackProvider implements FallbackProvider {
             public HttpHeaders getHeaders() {
                 // headers设定
                 HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.setContentType(new MediaType(MediaType.APPLICATION_JSON, Charset.defaultCharset()));
                 return headers;
             }
         };
