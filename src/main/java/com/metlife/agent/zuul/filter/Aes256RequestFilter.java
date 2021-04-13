@@ -71,9 +71,7 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
         //获取Conext对象应用上下文, 从中获取req,res对象
         RequestContext cxt = RequestContext.getCurrentContext();
         HttpServletRequest request = cxt.getRequest();
-        SecurityModel currentUser = SecurityHelper.getCurrentUser();
-        boolean vCode = currentUser.isVCode();
-        boolean instruct = currentUser.isInstruct();
+
         String requestURI = request.getRequestURI();
 
         //spring boot 工具类
@@ -82,6 +80,9 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
 
         //验证码 如果此处拦截 则需要放开开放URL
         if (Strings.isNullOrEmpty(collect)){
+            SecurityModel currentUser = SecurityHelper.getCurrentUser();
+            boolean vCode = currentUser.isVCode();
+            boolean instruct = currentUser.isInstruct();
             if (vCode){
                 setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.SMS_DEVICE_NULL));
                 return null;

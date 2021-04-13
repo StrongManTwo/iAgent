@@ -97,6 +97,10 @@ shiro:
       #包含 filter-chain-definitions anon 和 user
       filter-chain-custom-definitions:
         - /security-service/api/user/**
+        - /**/doc.html
+        - /**/webjars/**
+        - /**/swagger-resources/**
+        - /**/v2/api-docs
 
 
 
