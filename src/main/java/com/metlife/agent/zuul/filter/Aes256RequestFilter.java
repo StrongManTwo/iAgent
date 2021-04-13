@@ -1,27 +1,37 @@
 package com.metlife.agent.zuul.filter;
 
+import com.google.common.collect.Lists;
+import com.metlife.agent.ApplicationContextHolder;
 import com.metlife.agent.commons.exception.BusinessException;
 import com.metlife.agent.commons.exception.ExceptionMsg;
 import com.metlife.agent.commons.helper.*;
 import com.metlife.agent.commons.msg.ResponseData;
 import com.metlife.agent.commons.security.SecurityConstants;
+import com.metlife.agent.commons.security.SecurityProperties;
+import com.metlife.agent.commons.security.feign.SecurityClient;
+import com.metlife.agent.commons.security.model.SecurityModel;
 import com.metlife.agent.commons.vo.CacheDictVo;
 import com.google.common.base.Strings;
+import com.metlife.agent.commons.vo.MeterInterfaceVo;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import com.netflix.zuul.http.ServletInputStreamWrapper;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * post get加密
@@ -31,7 +41,9 @@ import java.util.UUID;
  **/
 @Component
 @Slf4j
-public class Aes256RequestFilter extends ZuulFilter {
+public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner{
+
+    private static List<String> listPath = Lists.newArrayList();
 
     @Override
     public String filterType() {
@@ -49,12 +61,39 @@ public class Aes256RequestFilter extends ZuulFilter {
         return Boolean.TRUE.booleanValue();
     }
 
+    @Autowired
+    private SecurityClient securityClient;
+
+
+
     @Override
     public Object run() throws ZuulException {
         //获取Conext对象应用上下文, 从中获取req,res对象
         RequestContext cxt = RequestContext.getCurrentContext();
         HttpServletRequest request = cxt.getRequest();
-        String method = request.getMethod();
+        SecurityModel currentUser = SecurityHelper.getCurrentUser();
+        boolean vCode = currentUser.isVCode();
+        boolean instruct = currentUser.isInstruct();
+        String requestURI = request.getRequestURI();
+
+        //spring boot 工具类
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        String collect = listPath.stream().filter(strURL -> antPathMatcher.match(strURL, requestURI)).collect(Collectors.joining(","));
+
+        //验证码 如果此处拦截 则需要放开开放URL
+        if (Strings.isNullOrEmpty(collect)){
+            if (vCode){
+                setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.SMS_DEVICE_NULL));
+                return null;
+            }
+            //用户须知未读
+            if (instruct){
+                setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.USER_INFORM));
+                return null;
+            }
+        }
+
+        String aesTimestamp = "";
         try {
             //aes256.开关是否开启aes256.enabled
             String client = ServletHelper.getHeader(SecurityConstants.CLIENT);
@@ -90,7 +129,9 @@ public class Aes256RequestFilter extends ZuulFilter {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 if ("timestamp".equals(entry.getKey())) {
                     // timestamp两次append
-                    str.append(entry.getValue());
+                    String aesValue = entry.getValue();
+                    str.append(aesValue);
+                    aesTimestamp = aesValue;
                 }
                 str.append(entry.getValue());
             }
@@ -125,6 +166,21 @@ public class Aes256RequestFilter extends ZuulFilter {
             cxt.addZuulRequestHeader(SecurityConstants.REQUEST_NO , requestNo);
             cxt.addZuulRequestHeader(SecurityConstants.CLIENT , client);
             cxt.addZuulRequestHeader(SecurityConstants.HEADER_UTOKEN, ServletHelper.getHeader(SecurityConstants.HEADER_UTOKEN));
+            cxt.addZuulRequestHeader(SecurityConstants.AES_TIMESTAMP, aesTimestamp);
+            String jMeterFlag = ServletHelper.getHeader(SecurityConstants.J_METER_FLAG);
+            if (!Strings.isNullOrEmpty(jMeterFlag)){
+                cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
+                MeterInterfaceVo meterInterface = new MeterInterfaceVo();
+                meterInterface.setAppTimeStamp(aesTimestamp);
+                meterInterface.setUrl(requestURI);
+                meterInterface.setRequestTimeStamp(String.valueOf(System.currentTimeMillis()));
+                meterInterface.setParams(jsonStr);
+                ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.insertOrUpdate(meterInterface);
+                if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
+                    log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", aesTimestamp, System.currentTimeMillis());
+                }
+            }
+
         } catch (Exception e) {
             //自定义异常
             if (e instanceof BusinessException){
@@ -151,6 +207,25 @@ public class Aes256RequestFilter extends ZuulFilter {
         ctx.setSendZuulResponse(false);
     }
 
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        SecurityProperties properties = ApplicationContextHolder.getBean(SecurityProperties.class);
+        if (properties == null){
+            return;
+        }
+        List<String> filterChainDefinitions = properties.getFilterChainDefinitions();
+        List<String> filterChainCustomDefinitions = Optional.of(properties.getFilterChainCustomDefinitions()).orElse(Lists.newArrayList());
+        filterChainDefinitions.forEach(str->{
+            String[] split = str.split("=");
+            String key = split[0];
+            String value = split[1];
+            if ("anon".equals(value) || "user".equals(value)){
+                filterChainCustomDefinitions.add(key);
+            }
+        });
+        listPath = Collections.unmodifiableList(filterChainCustomDefinitions);
+    }
+
     /**
      * TODO 测试加密
      */
@@ -172,5 +247,6 @@ public class Aes256RequestFilter extends ZuulFilter {
 //        String value = AES256Helper.encode(strs);
 //        System.out.println(value);
 //    }
+
 
 }
