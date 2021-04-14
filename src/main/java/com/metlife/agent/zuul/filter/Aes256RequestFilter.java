@@ -78,21 +78,21 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         String collect = listPath.stream().filter(strURL -> antPathMatcher.match(strURL, requestURI)).collect(Collectors.joining(","));
 
-//        //验证码 如果此处拦截 则需要放开开放URL
-//        if (Strings.isNullOrEmpty(collect)){
-//            SecurityModel currentUser = SecurityHelper.getCurrentUser();
-//            boolean vCode = currentUser.isVCode();
-//            boolean instruct = currentUser.isInstruct();
-//            if (vCode){
-//                setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.SMS_DEVICE_NULL));
-//                return null;
-//            }
-//            //用户须知未读
-//            if (instruct){
-//                setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.USER_INFORM));
-//                return null;
-//            }
-//        }
+       //验证码 如果此处拦截 则需要放开开放URL
+       if (Strings.isNullOrEmpty(collect)){
+           SecurityModel currentUser = SecurityHelper.getCurrentUser();
+           boolean vCode = currentUser.isVCode();
+           boolean instruct = currentUser.isInstruct();
+           if (vCode){
+               setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.SMS_DEVICE_NULL));
+               return null;
+           }
+           //用户须知未读
+           if (instruct){
+               setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.USER_INFORM));
+               return null;
+           }
+       }
 
         String aesTimestamp = "";
         try {
