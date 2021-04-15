@@ -103,6 +103,7 @@ shiro:
         - /**/webjars/**
         - /**/swagger-resources/**
         - /**/v2/api-docs
+        - /**/mapi/**
 logging:
   file:
     name: /data/log/${spring.application.name}/${spring.application.name}.log

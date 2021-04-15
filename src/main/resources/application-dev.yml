@@ -101,6 +101,7 @@ shiro:
         - /**/webjars/**
         - /**/swagger-resources/**
         - /**/v2/api-docs
+        -  /**/mapi/**
 
 
 
