@@ -50,11 +50,13 @@ public class ResponseFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
-        ctx.getResponseDataStream();
         Map<String, String> zuulRequestHeaders = ctx.getZuulRequestHeaders();
         String jMeterFlag = zuulRequestHeaders.get(SecurityConstants.J_METER_FLAG.toLowerCase());
         String aesTimestamp = zuulRequestHeaders.get(SecurityConstants.AES_TIMESTAMP.toLowerCase());
+        log.info("start jMeterFlag = {}", jMeterFlag);
         if (!Strings.isNullOrEmpty(jMeterFlag)){
+            ctx.getResponseDataStream();
+            log.info("end jMeterFlag = {}", jMeterFlag);
             try {
                 ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.getAppTimeStamp(aesTimestamp);
                 if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
