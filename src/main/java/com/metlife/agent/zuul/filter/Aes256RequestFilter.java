@@ -152,23 +152,6 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
             }
             //考虑复杂类型
             String jsonStr = JsonHelper.mapToJSONString(map);
-            if (!Strings.isNullOrEmpty(jsonStr)) {
-                byte[] bytes = jsonStr.getBytes();
-                cxt.setRequest(new HttpServletRequestWrapper(request) {
-                    @Override
-                    public ServletInputStream getInputStream() {
-                        return new ServletInputStreamWrapper(bytes);
-                    }
-                    @Override
-                    public int getContentLength() {
-                        return bytes.length;
-                    }
-                    @Override
-                    public long getContentLengthLong() {
-                        return bytes.length;
-                    }
-                });
-            }
             //进行转码操作
             cxt.addZuulRequestHeader("Content-Type" , MediaType.APPLICATION_JSON_UTF8_VALUE);
             cxt.addZuulRequestHeader(SecurityConstants.REQUEST_NO , requestNo);
@@ -189,6 +172,23 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
                 if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
                     log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", aesTimestamp, System.currentTimeMillis());
                 }
+            }
+            if (!Strings.isNullOrEmpty(jsonStr)) {
+                byte[] bytes = jsonStr.getBytes();
+                cxt.setRequest(new HttpServletRequestWrapper(request) {
+                    @Override
+                    public ServletInputStream getInputStream() {
+                        return new ServletInputStreamWrapper(bytes);
+                    }
+                    @Override
+                    public int getContentLength() {
+                        return bytes.length;
+                    }
+                    @Override
+                    public long getContentLengthLong() {
+                        return bytes.length;
+                    }
+                });
             }
 
         } catch (Exception e) {
