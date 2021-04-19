@@ -26,6 +26,7 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -64,8 +65,6 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
     @Autowired
     private SecurityClient securityClient;
 
-
-
     @Override
     public Object run() throws ZuulException {
         //获取Conext对象应用上下文, 从中获取req,res对象
@@ -76,7 +75,15 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
 
         //spring boot 工具类
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        String collect = listPath.stream().filter(strURL -> antPathMatcher.match(strURL, requestURI)).collect(Collectors.joining(","));
+//        //不加密的URL
+        List<CacheDictVo> cacheDictVos = Optional.ofNullable(DictHelper.findByCategoryCode("sec.attachment.path")).orElse(Lists.newArrayList());
+        List<CacheDictVo> collectCacheDictVo = cacheDictVos.stream().filter(cacheDictVo -> cacheDictVo != null && antPathMatcher.match(cacheDictVo.getDictValue(), requestURI)).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(collectCacheDictVo)){
+            return null;
+        }
+
+
+        String collect = listPath.stream().filter(strURL -> antPathMatcher.match(strURL, requestURI)).collect(Collectors.joining());
 
        //验证码 如果此处拦截 则需要放开开放URL
        if (Strings.isNullOrEmpty(collect)){
