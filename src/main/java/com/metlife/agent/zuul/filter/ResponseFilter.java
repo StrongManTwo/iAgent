@@ -16,9 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -31,12 +34,12 @@ import java.util.Map;
 public class ResponseFilter extends ZuulFilter {
     @Override
     public String filterType() {
-        return FilterConstants.PRE_TYPE;
+        return FilterConstants.POST_TYPE;
     }
 
     @Override
     public int filterOrder() {
-        return FilterConstants.SEND_RESPONSE_FILTER_ORDER-2;
+        return FilterConstants.SEND_RESPONSE_FILTER_ORDER-3;
     }
 
     @Override
@@ -50,14 +53,17 @@ public class ResponseFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
+
         Map<String, String> zuulRequestHeaders = ctx.getZuulRequestHeaders();
         String jMeterFlag = zuulRequestHeaders.get(SecurityConstants.J_METER_FLAG.toLowerCase());
         String aesTimestamp = zuulRequestHeaders.get(SecurityConstants.AES_TIMESTAMP.toLowerCase());
         log.info("start jMeterFlag = {}", jMeterFlag);
         if (!Strings.isNullOrEmpty(jMeterFlag)){
-            ctx.getResponseDataStream();
+            InputStream responseDataStream = ctx.getResponseDataStream();
             log.info("end jMeterFlag = {}", jMeterFlag);
             try {
+                String body = StreamUtils.copyToString(responseDataStream, StandardCharsets.UTF_8);
+                ctx.setResponseBody(body);
                 ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.getAppTimeStamp(aesTimestamp);
                 if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
                     log.error("not not aes_timestamp = {} msg = {}", aesTimestamp,
