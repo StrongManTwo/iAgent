@@ -91,12 +91,12 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
            boolean vCode = currentUser.isVCode();
            boolean instruct = currentUser.isInstruct();
            if (vCode){
-               setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.SMS_DEVICE_NULL));
+               setFailZuulCtx(cxt, ResponseData.newInstanceError(ExceptionMsg.LOGIN_REQUEST_ERROR.getCode() ,ExceptionMsg.SMS_DEVICE_NULL.getMsg()));
                return null;
            }
            //用户须知未读
            if (instruct){
-               setFailZuulCtx(cxt, ResponseData.newInstanceOfExceptionMsg(ExceptionMsg.USER_INFORM));
+               setFailZuulCtx(cxt, ResponseData.newInstanceError(ExceptionMsg.LOGIN_REQUEST_ERROR.getCode(), ExceptionMsg.USER_INFORM.getMsg()));
                return null;
            }
        }
@@ -211,7 +211,8 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
      * @param responseData
      */
     private static void setFailZuulCtx(RequestContext ctx, ResponseData responseData) {
-        ctx.setResponseStatusCode(403);
+//        ctx.setResponseStatusCode(403);
+        ctx.setResponseStatusCode(200); //统一200 无论任何错误
         ctx.setResponseBody(JsonHelper.toJSONString(responseData));
         ctx.getResponse().setContentType("application/json;charset=UTF-8");
         ctx.setSendZuulResponse(false);
