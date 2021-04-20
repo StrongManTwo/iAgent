@@ -159,9 +159,9 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
             cxt.addZuulRequestHeader(SecurityConstants.HEADER_UTOKEN, ServletHelper.getHeader(SecurityConstants.HEADER_UTOKEN));
             cxt.addZuulRequestHeader(SecurityConstants.AES_TIMESTAMP, aesTimestamp);
             String jMeterFlag = ServletHelper.getHeader(SecurityConstants.J_METER_FLAG);
-            log.info("start client = {}, jMeterFlag = {}", client, jMeterFlag);
+            log.debug("start client = {}, jMeterFlag = {}", client, jMeterFlag);
             if (!Strings.isNullOrEmpty(jMeterFlag)){
-                log.info("end client = {}, jMeterFlag = {}", client, jMeterFlag);
+                log.debug("end client = {}, jMeterFlag = {}", client, jMeterFlag);
                 cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
                 MeterInterfaceVo meterInterface = new MeterInterfaceVo();
                 meterInterface.setAppTimeStamp(aesTimestamp);

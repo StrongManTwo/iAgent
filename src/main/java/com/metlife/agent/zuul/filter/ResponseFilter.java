@@ -57,10 +57,10 @@ public class ResponseFilter extends ZuulFilter {
         Map<String, String> zuulRequestHeaders = ctx.getZuulRequestHeaders();
         String jMeterFlag = zuulRequestHeaders.get(SecurityConstants.J_METER_FLAG.toLowerCase());
         String aesTimestamp = zuulRequestHeaders.get(SecurityConstants.AES_TIMESTAMP.toLowerCase());
-        log.info("start jMeterFlag = {}", jMeterFlag);
+        log.debug("start jMeterFlag = {}", jMeterFlag);
         if (!Strings.isNullOrEmpty(jMeterFlag)){
             InputStream responseDataStream = ctx.getResponseDataStream();
-            log.info("end jMeterFlag = {}", jMeterFlag);
+            log.debug("end jMeterFlag = {}", jMeterFlag);
             try {
                 String body = StreamUtils.copyToString(responseDataStream, StandardCharsets.UTF_8);
                 ctx.setResponseBody(body);
