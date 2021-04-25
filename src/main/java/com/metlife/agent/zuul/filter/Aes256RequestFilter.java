@@ -32,6 +32,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -161,17 +163,21 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
             String jMeterFlag = ServletHelper.getHeader(SecurityConstants.J_METER_FLAG);
             log.debug("start client = {}, jMeterFlag = {}", client, jMeterFlag);
             if (!Strings.isNullOrEmpty(jMeterFlag)){
+                AtomicReference<String> atomicReference = new AtomicReference<>(aesTimestamp);
                 log.debug("end client = {}, jMeterFlag = {}", client, jMeterFlag);
-                cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
-                MeterInterfaceVo meterInterface = new MeterInterfaceVo();
-                meterInterface.setAppTimeStamp(aesTimestamp);
-                meterInterface.setUrl(requestURI);
-                meterInterface.setRequestTimeStamp(String.valueOf(System.currentTimeMillis()));
-                meterInterface.setParams(jsonStr);
-                ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.insertOrUpdate(meterInterface);
-                if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
-                    log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", aesTimestamp, System.currentTimeMillis());
-                }
+                CompletableFuture.runAsync(()->{
+
+                    cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
+                    MeterInterfaceVo meterInterface = new MeterInterfaceVo();
+                    meterInterface.setAppTimeStamp(atomicReference.get());
+                    meterInterface.setUrl(requestURI);
+                    meterInterface.setRequestTimeStamp(String.valueOf(System.currentTimeMillis()));
+                    meterInterface.setParams(jsonStr);
+                    ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.insertOrUpdate(meterInterface);
+                    if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
+                        log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", atomicReference.get(), System.currentTimeMillis());
+                    }
+                });
             }
             if (!Strings.isNullOrEmpty(jsonStr)) {
                 byte[] bytes = jsonStr.getBytes();

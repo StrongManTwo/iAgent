@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author HanKeQi
@@ -64,21 +65,29 @@ public class ResponseFilter extends ZuulFilter {
             try {
                 String body = StreamUtils.copyToString(responseDataStream, StandardCharsets.UTF_8);
                 ctx.setResponseBody(body);
-                ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.getAppTimeStamp(aesTimestamp);
-                if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
-                    log.error("not not aes_timestamp = {} msg = {}", aesTimestamp,
-                            meterInterfaceResponseData.getMsg());
-                    return null;
 
-                }
-                MeterInterfaceVo meterInterface = meterInterfaceResponseData.getData();
-                meterInterface.setResponseTimeStamp(String.valueOf(System.currentTimeMillis()));
-                ResponseData<MeterInterfaceVo> meterInterfaceUpdateResponseData = securityClient.insertOrUpdate(meterInterface);
-                if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceUpdateResponseData.getCode())){
-                    log.error("update meterInterfaceUpdateResponseData msg = {}", meterInterfaceUpdateResponseData.getMsg());
-                    return null;
+                CompletableFuture.runAsync(()-> {
+                    try {
+                        ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.getAppTimeStamp(aesTimestamp);
+                        if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
+                            log.error("not not aes_timestamp = {} msg = {}", aesTimestamp,
+                                    meterInterfaceResponseData.getMsg());
+                            return;
 
-                }
+                        }
+                        MeterInterfaceVo meterInterface = meterInterfaceResponseData.getData();
+                        meterInterface.setResponseTimeStamp(String.valueOf(System.currentTimeMillis()));
+                        ResponseData<MeterInterfaceVo> meterInterfaceUpdateResponseData = securityClient.insertOrUpdate(meterInterface);
+                        if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceUpdateResponseData.getCode())){
+                            log.error("update meterInterfaceUpdateResponseData msg = {}", meterInterfaceUpdateResponseData.getMsg());
+                            return;
+
+                        }
+                    }catch (Exception e){
+
+                    }
+                });
+
             }catch (Exception e){
                 e.printStackTrace();
             }
