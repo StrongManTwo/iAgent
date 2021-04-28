@@ -165,19 +165,17 @@ public class Aes256RequestFilter extends ZuulFilter implements ApplicationRunner
             if (!Strings.isNullOrEmpty(jMeterFlag)){
                 AtomicReference<String> atomicReference = new AtomicReference<>(aesTimestamp);
                 log.debug("end client = {}, jMeterFlag = {}", client, jMeterFlag);
-                CompletableFuture.runAsync(()->{
 
-                    cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
-                    MeterInterfaceVo meterInterface = new MeterInterfaceVo();
-                    meterInterface.setAppTimeStamp(atomicReference.get());
-                    meterInterface.setUrl(requestURI);
-                    meterInterface.setRequestTimeStamp(String.valueOf(System.currentTimeMillis()));
-                    meterInterface.setParams(jsonStr);
-                    ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.insertOrUpdate(meterInterface);
-                    if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
-                        log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", atomicReference.get(), System.currentTimeMillis());
-                    }
-                });
+                cxt.addZuulRequestHeader(SecurityConstants.J_METER_FLAG, jMeterFlag);
+                MeterInterfaceVo meterInterface = new MeterInterfaceVo();
+                meterInterface.setAppTimeStamp(atomicReference.get());
+                meterInterface.setUrl(requestURI);
+                meterInterface.setRequestTimeStamp(String.valueOf(System.currentTimeMillis()));
+                meterInterface.setParams(jsonStr);
+                ResponseData<MeterInterfaceVo> meterInterfaceResponseData = securityClient.insertOrUpdate(meterInterface);
+                if (!ExceptionMsg.SUCCESS.getCode().equals(meterInterfaceResponseData.getCode())){
+                    log.error("api-c  aesTimestamp  = {}, currentTimestamp = {}", atomicReference.get(), System.currentTimeMillis());
+                }
             }
             if (!Strings.isNullOrEmpty(jsonStr)) {
                 byte[] bytes = jsonStr.getBytes();
