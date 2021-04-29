@@ -5,6 +5,7 @@ import com.metlife.agent.commons.security.feign.SecurityClient;
 import com.metlife.agent.commons.security.model.SecurityModel;
 import com.metlife.agent.commons.vo.CacheDictVo;
 import com.metlife.agent.commons.vo.MeterInterfaceVo;
+import com.metlife.agent.commons.vo.UserLogVo;
 import com.metlife.agent.security.client.ISecurityProvideClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -78,6 +79,11 @@ public class SecurityClientImpl implements SecurityClient {
     @Override
     public ResponseData<MeterInterfaceVo> getAppTimeStamp(String appTimeStamp) {
         return securityProvideClient.getAppTimeStamp(appTimeStamp);
+    }
+
+    @Override
+    public void log(UserLogVo vo) {
+        securityProvideClient.log(vo);
     }
 
 //    @Override
