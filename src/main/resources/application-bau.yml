@@ -7,7 +7,7 @@ eureka:
       enabled: true
     service-url:
       defaultZone: ${AGENT_EUREKA_HOST1},${AGENT_EUREKA_HOST2}, ${AGENT_EUREKA_HOST3}
-  #      defaultZone: http://localhost:8761/eureka/
+#      defaultZone: http://localhost:8761/eureka/
   instance:
     #leaseRenewalIntervalInSeconds，表示eureka client发送心跳给server端的频率。如果在leaseExpirationDurationInSeconds后，server端没有收到client的心跳，则将摘除该instance。除此之外，如果该instance实现了HealthCheckCallback，并决定让自己unavailable的话，则该instance也不会接收到流量。
     #默认30秒
@@ -71,7 +71,7 @@ zuul:
   ribbon-isolation-strategy: THREAD
   threadPool.useSeparateThreadPools: true
   sensitive-headers: '*'
-  #  add-host-header: true
+#  add-host-header: true
   host:
     maxTotalConnections: 200
     maxPerRouteConnections: 200
@@ -87,23 +87,28 @@ shiro:
       manage-login-url: /mapi/login
       manage-logout-url: /mapi/logout
       expiretime: 604800
-      credentials-matcher: MIDDLE
+      credentials-matcher: sm3
       filter-chain-definitions:
         - /security-service/api/common/system-device=anon
         - /security-service/api/common/system-send-sms=anon
         - /security-service/api/update-version/**=anon
         - /security-service/api/common/system-off-line=anon
         - /security-service/mapi/common/**=user
-        - /**=utoken
+        - /**/api/**=utoken
+        - /**/mapi/**=utoken
       #包含 filter-chain-definitions anon 和 user
       filter-chain-custom-definitions:
         - /security-service/api/user/**
-
+        - /**/doc.html
+        - /**/webjars/**
+        - /**/swagger-resources/**
+        - /**/v2/api-docs
+        - /**/mapi/**
 logging:
   file:
     name: /data/log/${spring.application.name}/${spring.application.name}.log
   level:
-    root: debug
+    root: error
     com.metlife: debug
 
 feign:
