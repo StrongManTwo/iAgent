@@ -2,13 +2,12 @@ package com.metlife.agent.zuul.filter;
 
 import com.google.common.base.Strings;
 import com.metlife.agent.commons.exception.ExceptionMsg;
-import com.metlife.agent.commons.helper.ServletHelper;
+
 import com.metlife.agent.commons.msg.ResponseData;
 import com.metlife.agent.commons.security.SecurityConstants;
 import com.metlife.agent.commons.security.feign.SecurityClient;
 import com.metlife.agent.commons.vo.MeterInterfaceVo;
-import com.metlife.agent.security.client.ISecurityProvideClient;
-import com.metlife.agent.security.po.MeterInterface;
+
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -18,8 +17,6 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
