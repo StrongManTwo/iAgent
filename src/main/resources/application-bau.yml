@@ -36,7 +36,7 @@ spring:
   redis:
     host: ${AGENT_REDIS_HOST}
     port: ${AGENT_REDIS_PORT}
-    password: ${AGENT_REDIS_PASSWORD}
+    password: ${AGENT_REDIS_KEY}
     timeout: 10000
     database: 0
     lettuce:
